@@ -21,7 +21,7 @@ class Usuario
         ?int $id = 0,
         string $nome,
         string $email,
-        string $senhaHash,
+        ?string $senhaHash = "",
         int $idPerfil,
         ?bool $ativo = true,
     ) {
@@ -234,10 +234,33 @@ class Usuario
         return true;
     }
 
+    public function atualizar(){
+        $pdo = self::getConexao();
+
+        $sql = "UPDATE `usuarios` SET
+            `nome`=:nome,`email`=:email,`ativo`=:ativo,`id_perfil`=:perfil
+        WHERE `id_usuario`=:id";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute([
+           ':nome'=>$this->nome,
+            ':email'=>$this->email,
+            ':ativo'=>$this->ativo,
+            ':perfil'=>$this->idPerfil,
+            ':id'=>$this->id
+        ]);
+
+        if($stmt->rowCount()===0){
+            return false;
+        }
+        return true;        
+    }
+
 
 } // FIM DA CLASSE
 
-
+//github.com/iluanmendes
 
 // $usuario1 = new Usuario(
 //     nome: "Natan",
@@ -248,9 +271,19 @@ class Usuario
 
 // );
 
+$usuario2 = new Usuario(
+    id: 3, 
+    nome: "Apollo David",
+    email: "apollo@gmail.com",
+    idPerfil: "2",
+    ativo: true
+);
+
+$usuario2->atualizar();
+
+
 // $usuario->nome = "Nathan";
 
-Usuario::excluir(10);
 
 
 // echo "<pre>";
