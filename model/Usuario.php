@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 require_once(__DIR__ . "/../config/conexao.php");
 
 class Usuario
@@ -159,6 +162,11 @@ class Usuario
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if (!$row) {
+            throw new Exception("ID do usuário não encontrado.");
+            return null;
+        }
+
         $usuario = new Usuario(
             id: $row['id_usuario'],
             nome: $row['nome'],
@@ -172,17 +180,83 @@ class Usuario
 
         return $usuario;
     }
-}
+
+    public static function listarPorEmail(string $email)
+    {
+        $pdo = self::getConexao();
+
+        $sql = "SELECT u.id_usuario,
+            u.nome, 
+            u.email, 
+            u.ativo, 
+            u.id_perfil, 
+            p.nome_perfil AS perfil_nivel         
+        FROM usuarios AS u
+        INNER JOIN perfis AS p ON p.id_perfil = u.id_perfil
+        WHERE u.email = :email";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':email' => $email]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            throw new Exception("E-mail do usuário não encontrado.");
+            return null;
+        }
+
+        $usuario = new Usuario(
+            id: $row['id_usuario'],
+            nome: $row['nome'],
+            email: $row['email'],
+            senhaHash: "",
+            idPerfil: $row['id_perfil'],
+            ativo: (bool)$row['ativo']
+        );
+
+        $usuario->perfilNome = $row['perfil_nivel'];
+
+        return $usuario;
+    }
+
+    public static function excluir(int $id)
+    {
+        $pdo = self::getConexao();
+
+        $sql = "DELETE FROM `usuarios` WHERE `id_usuario`=:id";
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute([':id' => $id]);
+
+        if($stmt->rowCount()===0){
+            return false;
+        }
+        return true;
+    }
+
+
+} // FIM DA CLASSE
+
+
 
 // $usuario1 = new Usuario(
-//     nome:      "Natan",
-//     email:     "natanzinhoDelas@gmail.com",
+//     nome: "Natan",
+//     email: "natanzinhoDelas@gmail.com",
 //     senhaHash: "natan157",
-//     idPerfil:  "3",
-//     ativo: true   
+//     idPerfil: "3",
+//     ativo: true
 
 // );
 
+// $usuario->nome = "Nathan";
 
-echo "<pre>";
-print_r(Usuario::listarPorId(3));
+Usuario::excluir(10);
+
+
+// echo "<pre>";
+
+// try {
+//     print_r(Usuario::listarPorEmail("natanzinhoDelas@gmail.com"));
+// } catch (Exception $err) {
+//     echo $err->getMessage();
+// }
