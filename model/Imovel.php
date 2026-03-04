@@ -197,36 +197,5 @@ class Imovel
     }
 }
 
-try{
 
-    $imovel = new Imovel(
-        id: 1,
-        titulo: "Casa de Luxo",
-        tipo: "Casa",
-        tipo_negocio: "venda",
-        descricao: "Maravilhosa casa localizada no do Pq do Carmo",
-        preco: 10000000.50,
-        valor_condominio: 00,
-        valor_iptu: 1200.00,
-        cep: "08450-000",
-        cidade: "São Paulo",
-        bairro: "Itaquera",
-        estado: "SP",
-        endereco: "Rua Avenida Travessa Itaquera",
-        quartos: 4,
-        banheiros: 2,
-        vagas: 2,
-        area: 350.50,
-        status: "Disponível",
-        id_corretor: 1,
-        possui_piscina: true,
-        possui_churrasqueira:true,
-        slug: "casa-pq-do-carmo" 
-    );
-
-   echo $imovel->salvar();
-
-}catch(Exception $e){
-    echo $e->getMessage();
-}
 
