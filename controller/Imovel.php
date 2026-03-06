@@ -41,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         if ($imovel->salvar()) {
-           
+
             // Sucesso !!
             // LÓGICA PARA CADASTRAR AS IMAGENS
             $idImovel = $imovel->id;
             echo "<pre>";
             echo print_r($_POST);
-            
+
             if (isset($_FILES['fotos']) && !empty($_FILES['fotos']['name'][0])) {
 
                 echo "DEU CERTO!";
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             }
-            
+
             // header("Location: ../view/painelCadImoveis.php?sucesso=1");
             exit;
         } else {
@@ -86,7 +86,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
+    // Excluir imoveis
+    if (isset($_GET['excluir_id'])) {
+
+        $idImovel = (int)$_GET['excluir_id'];
+        $diretorio = "../uploads/imoveis/$idImovel/";
+
+        // Apaga o banco de dados
+        $imovel = new Imovel(id: $idImovel);
+        if ($imovel->excluir()) {
+            // Apaga o diretório
+
+            if (is_dir($diretorio)) {
+                array_map('unlink', glob("$diretorio/*.*"));
+                rmdir($diretorio);
+            }
+
+            echo "Excluído com sucesso!";
+        }
+    }
+}
 
 
 
