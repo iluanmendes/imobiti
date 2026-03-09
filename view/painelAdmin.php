@@ -1,7 +1,9 @@
 <?php
     require_once(__DIR__ . "/../model/Imovel.php");
 
-    $imoveis = Imovel::listarComFoto();    
+    $imoveis = Imovel::listarComFoto();
+
+    session_start();
 
 ?>
 
@@ -85,10 +87,23 @@
 
     <div class="container mt-5">
 
+        <!------ALERTA--------->
+        <?php if (isset($_SESSION['mensagem'])): ?>
+            <div class="alert alert-<?= $_SESSION['tipo_alerta'] ?> alert-dismissible fade show" role="alert">
+                <?= $_SESSION['mensagem'] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php
+                // Limpa as variaveis para não repetir um alerta no refresh
+                unset($_SESSION['mensagem']);
+                unset($_SESSION['tipo_alerta']);
+            ?>
+        <?php endif; ?>
+
         <!-- CABEÇALHO DA PÁGINA -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="section-title">Gerenciamento de Imóveis</h4>
-            <a href="formEditar_imovel.html" class="btn btn-primary">
+            <a href="painelCadImoveis.php" class="btn btn-primary">
                 <i class="bi bi-plus-lg"></i> Novo Imóvel
             </a>
         </div>
@@ -118,7 +133,10 @@
                 <div class="col-md-2">
                     <button class="btn btn-outline-secondary w-100">Filtrar</button>
                 </div>
+
             </div>
+
+
 
             <!-- TABELA DE DADOS -->
             <div class="table-responsive">
@@ -148,11 +166,11 @@
                                     </small>
                                 </td>
                                 <td><?= ucfirst($imovel->tipo) ?></td>
-                                <td>R$ 1.250.000,00</td>
+                                <td>R$ <?= number_format($imovel->preco, 2, ',', '.') ?></td>
                                 <td>
-                                    <?php 
-                                        $cor = ['disponivel'=>'success', 'vendido'=>'danger', 'alugado'=>'warning'];
-                                        $statusCor = $cor[$imovel->status] ?? 'secondary'
+                                    <?php
+                                    $cor = ['Disponível' => 'success', 'Vendido' => 'danger', 'Alugado' => 'warning'];
+                                    $statusCor = $cor[$imovel->status] ?? 'secondary'
                                     ?>
                                     <span class="badge bg-<?= $statusCor  ?> badge-status">
                                         <?= $imovel->status ?>
@@ -163,9 +181,13 @@
                                         <a href="#" class="btn btn-sm btn-outline-primary" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                        <a  href="../controller/Imovel.php?excluir_id=<?= $imovel->id ?>" 
+                                            class="btn btn-sm btn-outline-danger" 
+                                            title="Excluir"
+                                            onclick="return confirm('Deseja excluir este Imovel?')"
+                                            >
                                             <i class="bi bi-trash"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </td>
                             </tr> <!----FIM LINHA -->
