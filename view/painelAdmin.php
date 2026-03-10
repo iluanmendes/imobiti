@@ -1,9 +1,17 @@
 <?php
-    require_once(__DIR__ . "/../model/Imovel.php");
+require_once(__DIR__ . "/../model/Imovel.php");
 
-    $imoveis = Imovel::listarComFoto();
+$imoveis = Imovel::listarComFoto();
 
-    session_start();
+session_start();
+
+$filtros = [
+    'tipo'    => $_GET['fTipo']    ?? '',
+    'status'  => $_GET['fStatus']  ?? '',
+    'busca'   => $_GET['fBusca']   ?? ''
+];
+
+$imoveis = Imovel::listarComFiltros($filtros);
 
 ?>
 
@@ -90,13 +98,13 @@
         <!------ALERTA--------->
         <?php if (isset($_SESSION['mensagem'])): ?>
             <div class="alert alert-<?= $_SESSION['tipo_alerta'] ?> alert-dismissible fade show" role="alert">
-                <?= $_SESSION['mensagem'] ?>
+                <b><?= $_SESSION['mensagem'] ?></b>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <?php
-                // Limpa as variaveis para não repetir um alerta no refresh
-                unset($_SESSION['mensagem']);
-                unset($_SESSION['tipo_alerta']);
+            // Limpa as variaveis para não repetir um alerta no refresh
+            unset($_SESSION['mensagem']);
+            unset($_SESSION['tipo_alerta']);
             ?>
         <?php endif; ?>
 
@@ -111,30 +119,33 @@
         <div class="content-card">
 
             <!-- FILTROS RÁPIDOS -->
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Pesquisar por título, bairro ou cidade...">
+            <form method="GET" action="painelAdmin.php">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <input type="text" value="<?= $filtros['busca'] ?>" name="fBusca" class="form-control" placeholder="Pesquisar por título, bairro ou cidade...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="fTipo">
+                            <option value="">Todos os tipos</option>
+                            <option value="Casa" <?= $filtros['tipo'] == "Casa" ? 'selected' : '' ?>>Casa</option>
+                            <option value="Apartamento" <?= $filtros['tipo'] == "Apartamento" ? 'selected' : '' ?>>Apartamento</option>
+                            <option value="Sobrado" <?= $filtros['tipo'] == "Sobrado" ? 'selected' : '' ?>>Sobrado</option>
+                            <option value="Terreno" <?= $filtros['tipo'] == "Terreno" ? 'selected' : '' ?>>Terreno</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="fStatus">
+                            <option value="">Todos os status</option>
+                            <option value="disponivel">Disponível</option>
+                            <option value="vendido">Vendido</option>
+                            <option value="alugado">Alugado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-secondary w-100">Filtrar</button>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <select class="form-select">
-                        <option value="">Todos os tipos</option>
-                        <option value="casa">Casa</option>
-                        <option value="apartamento">Apartamento</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select">
-                        <option value="">Todos os status</option>
-                        <option value="disponivel">Disponível</option>
-                        <option value="vendido">Vendido</option>
-                        <option value="alugado">Alugado</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-outline-secondary w-100">Filtrar</button>
-                </div>
-
-            </div>
+            </form>
 
 
 
@@ -181,11 +192,10 @@
                                         <a href="#" class="btn btn-sm btn-outline-primary" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <a  href="../controller/Imovel.php?excluir_id=<?= $imovel->id ?>" 
-                                            class="btn btn-sm btn-outline-danger" 
+                                        <a href="../controller/Imovel.php?excluir_id=<?= $imovel->id ?>"
+                                            class="btn btn-sm btn-outline-danger"
                                             title="Excluir"
-                                            onclick="return confirm('Deseja excluir este Imovel?')"
-                                            >
+                                            onclick="return confirm('Deseja excluir este Imovel?')">
                                             <i class="bi bi-trash"></i>
                                         </a>
                                     </div>

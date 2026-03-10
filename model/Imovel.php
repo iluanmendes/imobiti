@@ -246,8 +246,7 @@ class Imovel
                 i.slug, i.data_criacao,
                 f.caminho AS foto_principal 
             FROM imoveis i 
-            LEFT JOIN fotos_imovel f ON i.id_imovel = f.id_imovel AND f.destaque = 1
-            ORDER BY i.id_imovel DESC
+            LEFT JOIN fotos_imovel f ON i.id_imovel = f.id_imovel AND f.destaque = 1            
             WHERE 1=1
             ";
         
@@ -259,16 +258,36 @@ class Imovel
             $params[] = $filtros['tipo'];
         };
         
-
-        // Filtro por tipo
+        // Filtro por status
         if(!empty($filtros['status'])){
             $sql.= " AND i.status = ?";
             $params[] = $filtros['status'];
         };
-        
 
+        // Filtro de texto (Título, Bairro ou Cidade)
+        if(!empty($filtros['busca'])){
+
+            $sql.= " AND (i.titulo LIKE ? OR i.bairro LIKE ? OR i.cidade LIKE ?)";
+            $busca = "%" . $filtros['busca'] . "%";
+
+            $params[] = $busca;
+            $params[] = $busca;
+            $params[] = $busca;         
         
-        echo $sql;
+        }
+
+        $sql .= " ORDER BY i.id_imovel DESC";
+
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        // echo "<pre>";
+        // print_r($stmt->debugDumpParams());
+        
+        // MAPEIA O ARRAY DE RETORNO EM UM OBJETO 'Imovel'
+        return $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Imovel');        
+    
     }
 
 
