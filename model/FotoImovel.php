@@ -12,11 +12,11 @@ class FotoImovel
 
 
     public function __construct(
-        ?int    $id_foto = 0,
         int     $id_imovel,
         string  $caminho,
         bool    $destaque,
         int     $ordem,
+        ?int    $id_foto = 0,
     ) {
 
         $this->id_foto  =   $id_foto;

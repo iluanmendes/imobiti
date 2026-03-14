@@ -2,7 +2,7 @@
     class Conexao {
 
         // Variaveis de conexao
-        private $host   = '10.91.45.48'; // IP do Banco de dados
+        private $host   = '192.168.0.166'; // IP do Banco de dados
         private $bd     = 'imobiliaria'; // Nome do banco de dados
         private $user   = 'admin';       // Usuario
         private $pass   = '123456';     

@@ -1,5 +1,5 @@
 <?php
-    $sucesso = $_GET['sucesso'] ?? 0;    
+$sucesso = $_GET['sucesso'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -119,19 +119,18 @@
 
             <div class="card-header-custom">
                 <h4 class="m-0">Novo Cadastro de Imóvel</h4>
-                <a href="painelAdmin.php" class="btn btn-sm btn-outline-secondary">Voltar para lista</a>
+                <a href="index.php?url=imovel/index" class="btn btn-sm btn-outline-secondary">Voltar para lista</a>
             </div>
 
             <!------ALERTA--------->
-            <?php if($sucesso==1): ?>        
+            <?php if ($sucesso == 1): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     Imovel Cadastrado com sucesso
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            <?php endif ?> 
+            <?php endif ?>
 
-            <form id="formImovel" method="POST" action="../controller/Imovel.php" enctype="multipart/form-data">
-
+            <form id="formImovel" method="POST" action="index.php?url=imovel/salvar" enctype="multipart/form-data">
                 <!-- INFORMAÇÕES BÁSICAS -->
                 <h5 class="section-title"><i class="bi bi-info-circle me-2"></i>Informações Básicas</h5>
                 <div class="row">
